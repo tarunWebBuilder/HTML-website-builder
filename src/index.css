@@ -1,3 +1,52 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --bg: #111315;
+    --panel: #181a1f;
+    --panel-soft: #1e2127;
+    --panel-muted: #14161a;
+    --border: rgba(255, 255, 255, 0.08);
+    --text: #f3ead9;
+    --muted: #aca18f;
+    --accent: #ff6b3d;
+    --accent-soft: rgba(255, 107, 61, 0.14);
+  }
+
+  html {
+    background:
+      radial-gradient(circle at top left, rgba(255, 107, 61, 0.12), transparent 26%),
+      linear-gradient(180deg, #17191d 0%, #111315 100%);
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background: transparent;
+    color: var(--text);
+    font-family: "Sora", "IBM Plex Sans", "Segoe UI", sans-serif;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}

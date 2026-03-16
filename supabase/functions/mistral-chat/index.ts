@@ -52,7 +52,7 @@ When the user asks you to create or modify HTML:
 8. Return ONLY the raw HTML code
 
 Current HTML:
-${currentHtml || 'No HTML yet - creating from scratch'}
+${currentHtml || "No HTML yet - creating from scratch"}
 
 Generate beautiful, professional landing pages with modern design principles.`;
 
@@ -100,7 +100,7 @@ Generate beautiful, professional landing pages with modern design principles.`;
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
       {
         status: 500,
         headers: {

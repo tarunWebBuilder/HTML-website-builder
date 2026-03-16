@@ -100,12 +100,24 @@ export default function ChatInterface({ projectId, currentHtml, onHtmlUpdate }: 
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="flex h-full flex-col bg-[#181a1f]">
+      <div className="border-b border-white/10 px-4 py-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8f8576]">Assistant</p>
+            <p className="mt-1 text-sm text-[#d8ceb9]">Describe what you want to build.</p>
+          </div>
+          <div className="rounded-full border border-[#3a2b24] bg-[#241913] px-3 py-1 text-xs text-[#ff8a63]">
+            Live
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1 space-y-4 overflow-y-auto p-4">
         {messages.length === 0 && (
-          <div className="text-center text-gray-500 mt-8">
-            <p className="text-lg font-medium mb-2">Start a conversation</p>
-            <p className="text-sm">Ask AI to create or modify your HTML landing page</p>
+          <div className="mt-8 rounded-3xl border border-white/10 bg-[#121419] p-6 text-center text-[#9c907f]">
+            <p className="mb-2 text-lg font-medium text-[#f6eedf]">Start a conversation</p>
+            <p className="text-sm">Ask AI to create or modify your HTML landing page.</p>
           </div>
         )}
 
@@ -117,8 +129,8 @@ export default function ChatInterface({ projectId, currentHtml, onHtmlUpdate }: 
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                 message.role === 'user'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-900'
+                  ? 'bg-[#f5e9d7] text-[#111315]'
+                  : 'border border-white/10 bg-[#121419] text-[#e5dac8]'
               }`}
             >
               <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
@@ -128,8 +140,8 @@ export default function ChatInterface({ projectId, currentHtml, onHtmlUpdate }: 
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-gray-100 rounded-2xl px-4 py-3">
-              <Loader2 className="w-5 h-5 animate-spin text-gray-600" />
+            <div className="rounded-2xl border border-white/10 bg-[#121419] px-4 py-3">
+              <Loader2 className="h-5 w-5 animate-spin text-[#ff8a63]" />
             </div>
           </div>
         )}
@@ -137,7 +149,7 @@ export default function ChatInterface({ projectId, currentHtml, onHtmlUpdate }: 
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t border-gray-200 p-4">
+      <div className="border-t border-white/10 p-4">
         <div className="flex gap-2">
           <input
             type="text"
@@ -145,13 +157,13 @@ export default function ChatInterface({ projectId, currentHtml, onHtmlUpdate }: 
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Describe your landing page..."
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            className="flex-1 rounded-2xl border border-white/10 bg-[#111315] px-4 py-3 text-[#f6eedf] outline-none transition focus:border-[#ff6b3d]/60 focus:ring-2 focus:ring-[#ff6b3d]/20"
             disabled={loading}
           />
           <button
             onClick={handleSend}
             disabled={loading || !input.trim()}
-            className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-2xl bg-[#f5e9d7] p-3 text-[#111315] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Send className="w-5 h-5" />
           </button>

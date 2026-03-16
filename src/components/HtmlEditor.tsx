@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Code, Eye, Download, Upload } from 'lucide-react';
+import { useState } from 'react';
+import { Code, Eye, Download, ImagePlus, Upload } from 'lucide-react';
 
 interface HtmlEditorProps {
   html: string;
@@ -23,6 +23,31 @@ export default function HtmlEditor({ html, onChange, onFileUpload }: HtmlEditorP
     }
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const imageSrc = event.target?.result as string;
+      if (!imageSrc) return;
+
+      const imageMarkup = `
+  <figure style="margin: 2rem 0; text-align: center;">
+    <img src="${imageSrc}" alt="${file.name}" style="max-width: 100%; height: auto; border-radius: 18px;" />
+  </figure>`;
+
+      if (html.includes('</body>')) {
+        onChange(html.replace('</body>', `${imageMarkup}
+</body>`));
+      } else {
+        onChange(`${html}${imageMarkup}`);
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
   const handleDownload = () => {
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -36,15 +61,15 @@ export default function HtmlEditor({ html, onChange, onFileUpload }: HtmlEditorP
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
-      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-        <div className="flex gap-2">
+    <div className="flex h-full flex-col bg-[#14161a]">
+      <div className="flex flex-col gap-3 border-b border-white/10 bg-[#181a1f] px-4 py-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setShowCode(!showCode)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center gap-2 rounded-2xl px-4 py-2 transition ${
               showCode
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-[#241913] text-[#ff9b7a]'
+                : 'border border-white/10 bg-[#111315] text-[#c9bdaa] hover:bg-[#17191d]'
             }`}
           >
             <Code className="w-4 h-4" />
@@ -52,10 +77,10 @@ export default function HtmlEditor({ html, onChange, onFileUpload }: HtmlEditorP
           </button>
           <button
             onClick={() => setShowPreview(!showPreview)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center gap-2 rounded-2xl px-4 py-2 transition ${
               showPreview
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-[#241913] text-[#ff9b7a]'
+                : 'border border-white/10 bg-[#111315] text-[#c9bdaa] hover:bg-[#17191d]'
             }`}
           >
             <Eye className="w-4 h-4" />
@@ -63,20 +88,10 @@ export default function HtmlEditor({ html, onChange, onFileUpload }: HtmlEditorP
           </button>
         </div>
 
-        <div className="flex gap-2">
-          <label className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg cursor-pointer transition-colors">
-            <Upload className="w-4 h-4" />
-            <span className="text-sm font-medium">Upload</span>
-            <input
-              type="file"
-              accept=".html"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-          </label>
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={handleDownload}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            className="flex items-center gap-2 rounded-2xl border border-white/10 bg-[#111315] px-4 py-2 text-[#c9bdaa] transition hover:bg-[#17191d]"
           >
             <Download className="w-4 h-4" />
             <span className="text-sm font-medium">Download</span>
@@ -84,30 +99,52 @@ export default function HtmlEditor({ html, onChange, onFileUpload }: HtmlEditorP
         </div>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden lg:flex-row">
         {showCode && (
-          <div className={`${showPreview ? 'w-1/2' : 'w-full'} flex flex-col border-r border-gray-200`}>
-            <div className="bg-gray-800 px-4 py-2">
-              <span className="text-xs font-medium text-gray-300">HTML</span>
+          <div className={`${showPreview ? 'lg:w-1/2' : 'w-full'} flex min-h-0 flex-col border-b border-white/10 lg:border-b-0 lg:border-r`}>
+            <div className="bg-[#121419] px-4 py-3">
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8f8576]">HTML</span>
             </div>
             <textarea
               value={html}
               onChange={(e) => onChange(e.target.value)}
-              className="flex-1 p-4 font-mono text-sm bg-gray-900 text-gray-100 resize-none focus:outline-none"
+              className="flex-1 resize-none bg-[#0f1115] p-4 font-mono text-sm text-[#f2e7d6] focus:outline-none"
               spellCheck={false}
             />
+            <div className="flex justify-end gap-2 border-t border-white/10 bg-[#121419] px-4 py-3">
+              <label className="flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-[#111315] px-4 py-2 text-[#c9bdaa] transition hover:bg-[#17191d]">
+                <Upload className="w-4 h-4" />
+                <span className="text-sm font-medium">Upload</span>
+                <input
+                  type="file"
+                  accept=".html"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </label>
+              <label className="flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-[#111315] px-4 py-2 text-[#c9bdaa] transition hover:bg-[#17191d]">
+                <ImagePlus className="w-4 h-4" />
+                <span className="text-sm font-medium">Image</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </label>
+            </div>
           </div>
         )}
 
         {showPreview && (
-          <div className={`${showCode ? 'w-1/2' : 'w-full'} flex flex-col`}>
-            <div className="bg-gray-100 px-4 py-2 border-b border-gray-200">
-              <span className="text-xs font-medium text-gray-600">Preview</span>
+          <div className={`${showCode ? 'lg:w-1/2' : 'w-full'} flex min-h-0 flex-col`}>
+            <div className="border-b border-white/10 bg-[#181a1f] px-4 py-3">
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8f8576]">Preview</span>
             </div>
-            <div className="flex-1 bg-white overflow-auto">
+            <div className="flex-1 overflow-auto bg-[#111315] p-3">
               <iframe
                 srcDoc={html}
-                className="w-full h-full border-0"
+                className="h-full w-full rounded-[20px] border border-white/10 bg-white"
                 sandbox="allow-scripts"
                 title="Preview"
               />
